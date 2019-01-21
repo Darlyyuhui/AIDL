@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Server</string>
+
+    <string name="st_nosuchmethodexception">方法不存在，请检查传递参数</string>
+    <string name="st_illegalaccessexception">安全权限验证失败，项目逻辑出现错误</string>
+    <string name="st_invocationtargetexception">方法执行失败，调用出现异常</string>
+    <string name="st_instantiationexception">实例化错误，项目逻辑出现错误</string>
+
+    <string name="st_null_paramer">参数为空</string>
+    <string name="st_opt_success">调用成功</string>
+    <string name="st_opt_failed">调用失败</string>
+    <string name="st_opt_start">开始执行</string>
+    <string-array name="st_201">
+        <item>201</item>
+        <item>中间层没有进行初始化，开始调用接口</item>
+        <item>中间层没有进行初始化，开始调用接口</item>
+        <item>请进行中间层初始化，然后进行接口调用</item>
+        <item>中间层</item>
+        <item>S</item>
+    </string-array>
+
+
+</resources>

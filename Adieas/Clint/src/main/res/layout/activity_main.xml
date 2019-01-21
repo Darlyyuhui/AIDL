@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/id_main_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!"
+        android:textColor="@color/colorAccent"/>
+
+
+    <Button
+        android:id="@+id/id_main_key"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="秘钥错误通栏"/>
+    <Button
+        android:id="@+id/id_main_btn_null"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="空参测试"/>
+    <Button
+        android:id="@+id/id_main_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="同步正常测试"/>
+    <Button
+        android:id="@+id/id_main_btn_wrong"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="同步错参测试"/>
+
+    <Button
+        android:id="@+id/id_main_btn_aysn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="异步测试"/>
+
+</LinearLayout>
