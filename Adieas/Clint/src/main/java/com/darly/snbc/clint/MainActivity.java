@@ -14,16 +14,19 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.darly.snbc.adieas.ServerAidlInterface;
-import com.darly.snbc.adieas.SeverAidlCallBack;
-import com.darly.snbc.adieas.bean.BaseInfo;
-import com.darly.snbc.adieas.bean.InParamer;
-import com.darly.snbc.adieas.bean.ParamerInfo;
+import com.darly.snbc.clint.common.Base64Utils;
 import com.darly.snbc.clint.common.BinderUtils;
+import com.darly.snbc.clint.common.RSAUtils;
+import com.snbc.bvm.ServerAidlInterface;
+import com.snbc.bvm.SeverAidlCallBack;
+import com.snbc.bvm.bean.BaseInfo;
+import com.snbc.bvm.bean.InParamer;
+import com.snbc.bvm.bean.ParamerInfo;
 
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements ServiceConnection {
+    public static String Public_key = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC6b5H69Hg7WjYMh8MgEFtBi0p7Rlz6Hhs+dWPRYmudm8FXCp/wA6WEL7IlWsZSSPZwL+UhogChVWGniixmsNJ701paxCD5zH3TVOS5qGph/K3PHg3Q0KaaiAT5z4sgNRCoKrugDEWP9RYxx1NiSwaD1FA+4Aix+x2+OZdw6zzZ4QIDAQAB";
 
     private ServerAidlInterface anInterface;
     private Button id_main_key;
@@ -39,10 +42,11 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (BinderUtils.checkPackInfo(this, "com.darly.snbc.adieas")) {
-            if (BinderUtils.openPackage(this, "com.darly.snbc.adieas")) {
+        if (BinderUtils.checkPackInfo(this, "com.snbc.bvm")) {
+            if (BinderUtils.openPackage(this, "com.snbc.bvm")) {
                 Intent intent = new Intent();
-                intent.setClassName("com.darly.snbc.adieas", "com.darly.snbc.adieas.ui.server.ServerService");
+                intent.setPackage("com.snbc.bvm");
+                intent.setAction("android.intent.action.SnbcBvmService");
                 bindService(intent, this, Context.BIND_AUTO_CREATE);
             } else {
                 Toast.makeText(this, "关联应用打开失败，请检查应用是否正常", Toast.LENGTH_SHORT).show();
@@ -64,13 +68,16 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                         InParamer paramer = new InParamer();
                         String id = UUID.randomUUID().toString();
                         paramer.setRandom(id);
-                        paramer.setParamer(paramerInfo.toJson() + id);
+                        byte[] byt = RSAUtils.encryptDataByPublic(paramerInfo.toJson().getBytes(),Public_key);
+                        paramer.setParamer(Base64Utils.encode(byt));
                         paramer.setMethod(InParamer.MethodEnum.BVMINIT);
                         BaseInfo info = anInterface.onBinder(paramer, null);
                         if (info != null) {
                             id_main_tv.setText(info.getCode() + info.getMsg());
                         }
                     } catch (RemoteException e) {
+                        e.printStackTrace();
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -90,13 +97,18 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                         InParamer paramer = new InParamer();
                         String id = UUID.randomUUID().toString();
                         paramer.setRandom(id);
-                        paramer.setParamer(paramerInfo.toJson() + id);
-                        paramer.setMethod(InParamer.MethodEnum.BVMINIT);
+                        byte[] byt = RSAUtils.encryptDataByPublic(paramerInfo.toJson().getBytes(),Public_key);
+                        paramer.setParamer(Base64Utils.encode(byt));
+                        paramer.setMethod(InParamer.MethodEnum.BVMCTRLSALEGOODSSTEPPRO);
                         BaseInfo info = anInterface.onBinder(paramer, null);
                         if (info != null) {
-                            id_main_tv.setText(info.getCode() + info.getMsg());
+
+                            String kk = new String(RSAUtils.decryptDataByPublic(Base64Utils.decode(info.getBody()),Public_key));
+                            id_main_tv.setText(info.getCode() + info.getMsg()+kk);
                         }
                     } catch (RemoteException e) {
+                        e.printStackTrace();
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -132,14 +144,17 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                         InParamer paramer = new InParamer();
                         String id = UUID.randomUUID().toString();
                         paramer.setRandom(id);
-                        paramer.setParamer(paramerInfo.toJson() + id);
-                        paramer.setMethod(InParamer.MethodEnum.BVMGETRUNNINGSTATE);
+                        byte[] byt = RSAUtils.encryptDataByPublic(paramerInfo.toJson().getBytes(),Public_key);
+                        paramer.setParamer(Base64Utils.encode(byt));
+                        paramer.setMethod(InParamer.MethodEnum.BVMELECDOORCTRL);
                         BaseInfo info = anInterface.onBinder(paramer, null);
                         Log.d(getClass().getSimpleName(), "Clint调用成功");
                         if (info != null) {
                             id_main_tv.setText(info.getCode() + info.getMsg());
                         }
                     } catch (RemoteException e) {
+                        e.printStackTrace();
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -154,12 +169,13 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                         ParamerInfo paramerInfo = new ParamerInfo();
                         paramerInfo.setAddr(12);
                         paramerInfo.setBoxid(12);
-                        paramerInfo.setFilepath("测试数据");
+                        paramerInfo.setFilepath("3333333333333lafksdjflakjsdflkj");
                         InParamer paramer = new InParamer();
                         String id = UUID.randomUUID().toString();
                         paramer.setRandom(id);
-                        paramer.setParamer(id);
-                        paramer.setMethod(InParamer.MethodEnum.BVMGETDOORSTATE);
+                        byte[] byt = RSAUtils.encryptDataByPublic(paramerInfo.toJson().getBytes(),Public_key);
+                        paramer.setParamer(Base64Utils.encode(byt));
+                        paramer.setMethod(InParamer.MethodEnum.BVMGETCOLDHEATMODEL);
                         BaseInfo info = anInterface.onBinder(paramer, new SeverAidlCallBack.Stub() {
                             @Override
                             public void onInvokeStart() throws RemoteException {
@@ -199,6 +215,8 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                             id_main_tv.setText(info.getCode() + info.getMsg());
                         }
                     } catch (RemoteException e) {
+                        e.printStackTrace();
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }

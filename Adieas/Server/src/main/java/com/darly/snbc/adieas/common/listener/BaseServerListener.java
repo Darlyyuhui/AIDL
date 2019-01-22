@@ -1,9 +1,8 @@
 package com.darly.snbc.adieas.common.listener;
 
-import com.darly.snbc.adieas.SeverAidlCallBack;
-import com.darly.snbc.adieas.bean.BaseInfo;
-import com.darly.snbc.adieas.bean.ParamerInfo;
-import com.darly.snbc.adieas.bean.ParamerInfo;
+import com.snbc.bvm.SeverAidlCallBack;
+import com.snbc.bvm.bean.BaseInfo;
+import com.snbc.bvm.bean.ParamerInfo;
 
 /**
  * 基础接口调用方案。

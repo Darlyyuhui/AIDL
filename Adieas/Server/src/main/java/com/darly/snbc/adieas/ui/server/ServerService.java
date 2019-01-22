@@ -8,11 +8,11 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONException;
-import com.darly.snbc.adieas.ServerAidlInterface;
-import com.darly.snbc.adieas.SeverAidlCallBack;
-import com.darly.snbc.adieas.bean.BaseInfo;
-import com.darly.snbc.adieas.bean.InParamer;
-import com.darly.snbc.adieas.bean.ParamerInfo;
+import com.snbc.bvm.ServerAidlInterface;
+import com.snbc.bvm.SeverAidlCallBack;
+import com.snbc.bvm.bean.BaseInfo;
+import com.snbc.bvm.bean.InParamer;
+import com.snbc.bvm.bean.ParamerInfo;
 
 /**
  * 包名称：com.darly.snbc.adieas.ui.server

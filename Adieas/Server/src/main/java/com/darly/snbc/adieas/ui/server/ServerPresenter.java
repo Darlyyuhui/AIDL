@@ -3,13 +3,13 @@ package com.darly.snbc.adieas.ui.server;
 import android.text.TextUtils;
 
 import com.darly.snbc.adieas.R;
-import com.darly.snbc.adieas.SeverAidlCallBack;
 import com.darly.snbc.adieas.base.BaseApplication;
-import com.darly.snbc.adieas.bean.BaseInfo;
-import com.darly.snbc.adieas.bean.InterfaceVersion;
-import com.darly.snbc.adieas.bean.ParamerInfo;
 import com.darly.snbc.adieas.common.listener.BaseServerListener;
 import com.darly.snbc.adieas.ui.biz.ServerBiz;
+import com.snbc.bvm.SeverAidlCallBack;
+import com.snbc.bvm.bean.BaseInfo;
+import com.snbc.bvm.bean.InterfaceVersion;
+import com.snbc.bvm.bean.ParamerInfo;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
