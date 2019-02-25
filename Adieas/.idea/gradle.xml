@@ -9,6 +9,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/Clint" />
+            <option value="$PROJECT_DIR$/ReadJar" />
             <option value="$PROJECT_DIR$/Server" />
           </set>
         </option>

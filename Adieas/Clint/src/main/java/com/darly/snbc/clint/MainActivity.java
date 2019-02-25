@@ -42,18 +42,19 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (BinderUtils.checkPackInfo(this, "com.snbc.bvm")) {
-            if (BinderUtils.openPackage(this, "com.snbc.bvm")) {
+//        if (BinderUtils.checkPackInfo(this, "com.snbc.bvm")) {
+//            if (BinderUtils.openPackage(this, "com.snbc.bvm")) {
                 Intent intent = new Intent();
-                intent.setPackage("com.snbc.bvm");
-                intent.setAction("android.intent.action.SnbcBvmService");
+//                intent.setPackage("com.snbc.bvm");
+                intent.setPackage("com.darly.snbc.adieas");
+                intent.setAction("android.intent.action.ServerService");
                 bindService(intent, this, Context.BIND_AUTO_CREATE);
-            } else {
-                Toast.makeText(this, "关联应用打开失败，请检查应用是否正常", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            Toast.makeText(this, "关联应用没有安装，请下载安装", Toast.LENGTH_SHORT).show();
-        }
+//            } else {
+//                Toast.makeText(this, "关联应用打开失败，请检查应用是否正常", Toast.LENGTH_SHORT).show();
+//            }
+//        } else {
+//            Toast.makeText(this, "关联应用没有安装，请下载安装", Toast.LENGTH_SHORT).show();
+//        }
         id_main_tv = findViewById(R.id.id_main_tv);
         id_main_key = findViewById(R.id.id_main_key);
         id_main_key.setOnClickListener(new View.OnClickListener() {
@@ -61,20 +62,22 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
             public void onClick(View v) {
                 if (anInterface != null) {
                     try {
-                        ParamerInfo paramerInfo = new ParamerInfo();
-                        paramerInfo.setAddr(12);
-                        paramerInfo.setBoxid(12);
-                        paramerInfo.setFilepath("3333333333333lafksdjflakjsdflkj");
-                        InParamer paramer = new InParamer();
-                        String id = UUID.randomUUID().toString();
-                        paramer.setRandom(id);
-                        byte[] byt = RSAUtils.encryptDataByPublic(paramerInfo.toJson().getBytes(),Public_key);
-                        paramer.setParamer(Base64Utils.encode(byt));
-                        paramer.setMethod(InParamer.MethodEnum.BVMINIT);
-                        BaseInfo info = anInterface.onBinder(paramer, null);
-                        if (info != null) {
-                            id_main_tv.setText(info.getCode() + info.getMsg());
-                        }
+                       int key  =  anInterface.Init("KEy");
+                        id_main_tv.setText(key+"");
+//                        ParamerInfo paramerInfo = new ParamerInfo();
+//                        paramerInfo.setAddr(12);
+//                        paramerInfo.setBoxid(12);
+//                        paramerInfo.setFilepath("3333333333333lafksdjflakjsdflkj");
+//                        InParamer paramer = new InParamer();
+//                        String id = UUID.randomUUID().toString();
+//                        paramer.setRandom(id);
+//                        byte[] byt = RSAUtils.encryptDataByPublic(paramerInfo.toJson().getBytes(),Public_key);
+//                        paramer.setParamer(Base64Utils.encode(byt));
+//                        paramer.setMethod(InParamer.MethodEnum.BVMINIT);
+//                        BaseInfo info = anInterface.onBinder(paramer, null);
+//                        if (info != null) {
+//                            id_main_tv.setText(info.getCode() + info.getMsg());
+//                        }
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     } catch (Exception e) {

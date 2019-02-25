@@ -1,1 +1,1 @@
-include ':Server',':Clint'
+include ':Server',':Clint',':ReadJar'

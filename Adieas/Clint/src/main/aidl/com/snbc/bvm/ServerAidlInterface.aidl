@@ -11,4 +11,6 @@ interface ServerAidlInterface {
      * and return values in AIDL.
      */
     BaseInfo onBinder(in InParamer paramer,in SeverAidlCallBack callback);
+
+    int Init(in String key);
 }

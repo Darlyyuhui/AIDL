@@ -62,6 +62,12 @@ public class ServerService extends Service {
                 }
             }
         }
+
+        @Override
+        public int Init() throws RemoteException {
+            return -100101;
+        }
+
     };
 
 }
