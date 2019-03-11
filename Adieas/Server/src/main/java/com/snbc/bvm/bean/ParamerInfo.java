@@ -1,9 +1,9 @@
 package com.snbc.bvm.bean;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.alibaba.fastjson.JSON;
+
+import java.util.Map;
 
 /**
  * 输入参数对象详细参数信息
@@ -13,7 +13,7 @@ import com.alibaba.fastjson.JSON;
  * 公司：山东新北洋信息技术股份有限公司西安分公司
  * 邮箱：zhangyuhui@newbeiyang.com
  */
-public class ParamerInfo implements Parcelable{
+public class ParamerInfo{
     private int boxid;
     private int jboxid;
     private int workmode;
@@ -47,6 +47,11 @@ public class ParamerInfo implements Parcelable{
     private String ordernumber;//String 订单号，最大32字节
     private String code;//最大64字节长度字符串
     private String filepath;//升级文件全路径，不允许有中文
+    //签到接口进行修改，传递vemId和assetCode参数
+    private String vemId;   //售货机编码
+    private Map<String,String> assetCode;    //参数是Map<String,String>类型，代表意思资产编码组（key是出厂编码，value是对应的资产编码）
+
+    private int depot;
 
     public int getBoxid() {
         return boxid;
@@ -312,95 +317,29 @@ public class ParamerInfo implements Parcelable{
         this.filepath = filepath;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getVemId() {
+        return vemId;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {//把javanbean中的数据写到Parcel
-        dest.writeInt(boxid);
-        dest.writeInt(jboxid);
-        dest.writeInt(workmode);
-        dest.writeInt(timeout);
-        dest.writeInt(xyselect);
-        dest.writeInt(xselect);
-        dest.writeInt(yselect);
-        dest.writeInt(count);
-        dest.writeInt(startposition);
-        dest.writeInt(intentposition);
-        dest.writeInt(positionX);
-        dest.writeInt(positionY);
-        dest.writeInt(elcspeed);
-        dest.writeInt(chspeed);
-        dest.writeInt(laser);
-        dest.writeInt(pickup);
-        dest.writeInt(price);
-        dest.writeInt(goodsnum);
-        dest.writeInt(state);
-        dest.writeInt(type);
-        dest.writeInt(addr);
-        dest.writeInt(size);
-        dest.writeInt(nLay);
-        dest.writeInt(nRow);
-        dest.writeInt(querytype);
-        dest.writeInt(mode);
-        dest.writeInt(onTemp);
-        dest.writeInt(offTemp);
-        dest.writeString(goodsNumThick);
-        dest.writeString(key);
-        dest.writeString(ordernumber);
-        dest.writeString(code);
-        dest.writeString(filepath);
+    public void setVemId(String vemId) {
+        this.vemId = vemId;
     }
 
-    //添加一个静态成员,名为CREATOR,该对象实现了Parcelable.Creator接口
-    public static final Creator<ParamerInfo> CREATOR = new Creator<ParamerInfo>() {
-        @Override
-        public ParamerInfo createFromParcel(Parcel source) {//从Parcel中读取数据，返回person对象
-            ParamerInfo info = new ParamerInfo();
-            info.boxid = source.readInt();
-            info.jboxid = source.readInt();
-            info.workmode = source.readInt();
-            info.timeout = source.readInt();
-            info.xyselect = source.readInt();
-            info.xselect = source.readInt();
-            info.yselect = source.readInt();
-            info.count = source.readInt();
-            info.startposition = source.readInt();
-            info.intentposition = source.readInt();
-            info.positionX = source.readInt();
-            info.positionY = source.readInt();
-            info.elcspeed = source.readInt();
-            info.chspeed = source.readInt();
-            info.laser = source.readInt();
-            info.pickup = source.readInt();
-            info.price = source.readInt();
-            info.goodsnum = source.readInt();
-            info.state = source.readInt();
-            info.type = source.readInt();
-            info.addr = source.readInt();
-            info.size = source.readInt();
-            info.nLay = source.readInt();
-            info.nRow = source.readInt();
-            info.querytype = source.readInt();
-            info.mode = source.readInt();
-            info.onTemp = source.readInt();
-            info.offTemp = source.readInt();
-            info.goodsNumThick = source.readString();
-            info.key = source.readString();
-            info.ordernumber = source.readString();
-            info.code = source.readString();
-            info.filepath = source.readString();
-            return info;
-        }
+    public Map<String, String> getAssetCode() {
+        return assetCode;
+    }
 
-        @Override
-        public ParamerInfo[] newArray(int size) {
-            return new ParamerInfo[size];
-        }
-    };
+    public void setAssetCode(Map<String, String> assetCode) {
+        this.assetCode = assetCode;
+    }
 
+    public int getDepot() {
+        return depot;
+    }
+
+    public void setDepot(int depot) {
+        this.depot = depot;
+    }
 
     public String toJson(){
         return JSON.toJSONString(this);

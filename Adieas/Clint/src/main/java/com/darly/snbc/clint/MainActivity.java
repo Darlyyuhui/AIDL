@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -44,11 +45,11 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
 //        if (BinderUtils.checkPackInfo(this, "com.snbc.bvm")) {
 //            if (BinderUtils.openPackage(this, "com.snbc.bvm")) {
-                Intent intent = new Intent();
+        Intent intent = new Intent();
 //                intent.setPackage("com.snbc.bvm");
-                intent.setPackage("com.darly.snbc.adieas");
-                intent.setAction("android.intent.action.ServerService");
-                bindService(intent, this, Context.BIND_AUTO_CREATE);
+        intent.setPackage("com.darly.snbc.adieas");
+        intent.setAction("android.intent.action.ServerService");
+        bindService(intent, this, Context.BIND_AUTO_CREATE);
 //            } else {
 //                Toast.makeText(this, "关联应用打开失败，请检查应用是否正常", Toast.LENGTH_SHORT).show();
 //            }
@@ -62,8 +63,8 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
             public void onClick(View v) {
                 if (anInterface != null) {
                     try {
-                       int key  =  anInterface.Init("KEy");
-                        id_main_tv.setText(key+"");
+                        int key = anInterface.Init("KEy");
+                        id_main_tv.setText(key + "");
 //                        ParamerInfo paramerInfo = new ParamerInfo();
 //                        paramerInfo.setAddr(12);
 //                        paramerInfo.setBoxid(12);
@@ -100,14 +101,14 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                         InParamer paramer = new InParamer();
                         String id = UUID.randomUUID().toString();
                         paramer.setRandom(id);
-                        byte[] byt = RSAUtils.encryptDataByPublic(paramerInfo.toJson().getBytes(),Public_key);
+                        byte[] byt = RSAUtils.encryptDataByPublic(paramerInfo.toJson().getBytes(), Public_key);
                         paramer.setParamer(Base64Utils.encode(byt));
                         paramer.setMethod(InParamer.MethodEnum.BVMCTRLSALEGOODSSTEPPRO);
                         BaseInfo info = anInterface.onBinder(paramer, null);
                         if (info != null) {
 
-                            String kk = new String(RSAUtils.decryptDataByPublic(Base64Utils.decode(info.getBody()),Public_key));
-                            id_main_tv.setText(info.getCode() + info.getMsg()+kk);
+                            String kk = new String(RSAUtils.decryptDataByPublic(Base64Utils.decode(info.getBody()), Public_key));
+                            id_main_tv.setText(info.getCode() + info.getMsg() + kk);
                         }
                     } catch (RemoteException e) {
                         e.printStackTrace();
@@ -138,91 +139,147 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         id_main_btn_wrong.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (anInterface != null) {
-                    try {
-                        ParamerInfo paramerInfo = new ParamerInfo();
-                        paramerInfo.setAddr(12);
-                        paramerInfo.setBoxid(12);
-                        paramerInfo.setFilepath("3333333333333lafksdjflakjsdflkj");
-                        InParamer paramer = new InParamer();
-                        String id = UUID.randomUUID().toString();
-                        paramer.setRandom(id);
-                        byte[] byt = RSAUtils.encryptDataByPublic(paramerInfo.toJson().getBytes(),Public_key);
-                        paramer.setParamer(Base64Utils.encode(byt));
-                        paramer.setMethod(InParamer.MethodEnum.BVMELECDOORCTRL);
-                        BaseInfo info = anInterface.onBinder(paramer, null);
-                        Log.d(getClass().getSimpleName(), "Clint调用成功");
-                        if (info != null) {
-                            id_main_tv.setText(info.getCode() + info.getMsg());
+
+                new AsyncTask<Void, Void, BaseInfo>() {
+                    @Override
+                    protected BaseInfo doInBackground(Void... voids) {
+                        if (anInterface != null) {
+                            try {
+                                ParamerInfo paramerInfo = new ParamerInfo();
+                                paramerInfo.setAddr(12);
+                                paramerInfo.setBoxid(12);
+                                InParamer paramer = new InParamer();
+                                String id = UUID.randomUUID().toString();
+                                paramer.setRandom(id);
+                                paramer.setParamer(paramerInfo.toJson());
+                                paramer.setMethod(InParamer.MethodEnum.BVMELECDOORCTRL);
+                                BaseInfo info = anInterface.onBinder(paramer, new SeverAidlCallBack.Stub() {
+                                    @Override
+                                    public void onInvokeStart() throws RemoteException {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                String tx = id_main_tv.getText().toString().trim();
+                                                id_main_tv.setText(tx + "\r\nonInvokeStart");
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onInvokeSuccess(final BaseInfo info) throws RemoteException {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                String tx = id_main_tv.getText().toString().trim();
+                                                id_main_tv.setText(tx + "\r\nonInvokeSuccess" + info.getCode() + info.getMsg());
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onInvokeFailed(final BaseInfo info) throws RemoteException {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                String tx = id_main_tv.getText().toString().trim();
+                                                id_main_tv.setText(tx + "\r\nonInvokeFailed" + info.getCode() + info.getMsg());
+                                            }
+                                        });
+                                    }
+                                });
+                                return info;
+                            } catch (RemoteException e) {
+                                e.printStackTrace();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            return null;
+                        }else {
+                            return null;
                         }
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
-                }
+
+                    @Override
+                    protected void onPostExecute(BaseInfo info) {
+                        if (info != null) {
+                            String tx = id_main_tv.getText().toString().trim();
+                            id_main_tv.setText(tx + "\r\n" + info.getCode() + info.getMsg());
+                        }
+                    }
+                }.execute();
             }
         });
         id_main_btn_aysn = findViewById(R.id.id_main_btn_aysn);
         id_main_btn_aysn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (anInterface != null) {
-                    try {
-                        ParamerInfo paramerInfo = new ParamerInfo();
-                        paramerInfo.setAddr(12);
-                        paramerInfo.setBoxid(12);
-                        paramerInfo.setFilepath("3333333333333lafksdjflakjsdflkj");
-                        InParamer paramer = new InParamer();
-                        String id = UUID.randomUUID().toString();
-                        paramer.setRandom(id);
-                        byte[] byt = RSAUtils.encryptDataByPublic(paramerInfo.toJson().getBytes(),Public_key);
-                        paramer.setParamer(Base64Utils.encode(byt));
-                        paramer.setMethod(InParamer.MethodEnum.BVMGETCOLDHEATMODEL);
-                        BaseInfo info = anInterface.onBinder(paramer, new SeverAidlCallBack.Stub() {
-                            @Override
-                            public void onInvokeStart() throws RemoteException {
-                                Log.i(getClass().getSimpleName(), "onInvokeStart");
-                                runOnUiThread(new Runnable() {
+                new AsyncTask<Void, Void, BaseInfo>() {
+                    @Override
+                    protected BaseInfo doInBackground(Void... voids) {
+                        if (anInterface != null) {
+                            try {
+                                ParamerInfo paramerInfo = new ParamerInfo();
+                                paramerInfo.setAddr(12);
+                                paramerInfo.setBoxid(12);
+                                InParamer paramer = new InParamer();
+                                String id = UUID.randomUUID().toString();
+                                paramer.setRandom(id);
+                                paramer.setParamer(paramerInfo.toJson());
+                                paramer.setMethod(InParamer.MethodEnum.BVMSTARTSHIP);
+                                BaseInfo info = anInterface.onBinder(paramer, new SeverAidlCallBack.Stub() {
                                     @Override
-                                    public void run() {
-                                        id_main_tv.setText("onInvokeStart");
+                                    public void onInvokeStart() throws RemoteException {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                String tx = id_main_tv.getText().toString().trim();
+                                                id_main_tv.setText(tx + "\r\nonInvokeStart");
+                                            }
+                                        });
                                     }
-                                });
-                            }
 
-                            @Override
-                            public void onInvokeSuccess(final BaseInfo info) throws RemoteException {
-                                Log.i(getClass().getSimpleName(), "onInvokeSuccess");
-                                runOnUiThread(new Runnable() {
                                     @Override
-                                    public void run() {
-                                        id_main_tv.setText("onInvokeSuccess" + info.getCode() + info.getMsg());
+                                    public void onInvokeSuccess(final BaseInfo info) throws RemoteException {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                String tx = id_main_tv.getText().toString().trim();
+                                                id_main_tv.setText(tx + "\r\nonInvokeSuccess" + info.getCode() + info.getMsg());
+                                            }
+                                        });
                                     }
-                                });
-                            }
 
-                            @Override
-                            public void onInvokeFailed(final BaseInfo info) throws RemoteException {
-                                Log.i(getClass().getSimpleName(), "onInvokeFailed");
-                                runOnUiThread(new Runnable() {
                                     @Override
-                                    public void run() {
-                                        id_main_tv.setText("onInvokeFailed" + info.getCode() + info.getMsg());
+                                    public void onInvokeFailed(final BaseInfo info) throws RemoteException {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                String tx = id_main_tv.getText().toString().trim();
+                                                id_main_tv.setText(tx + "\r\nonInvokeFailed" + info.getCode() + info.getMsg());
+                                            }
+                                        });
                                     }
                                 });
+                                return info;
+                            } catch (RemoteException e) {
+                                e.printStackTrace();
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                        });
-                        Log.d(getClass().getSimpleName(), "Clint调用成功");
-                        if (info != null) {
-                            id_main_tv.setText(info.getCode() + info.getMsg());
+                            return null;
+                        }else {
+                            return null;
                         }
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
-                }
+
+                    @Override
+                    protected void onPostExecute(BaseInfo info) {
+                        if (info != null) {
+                            String tx = id_main_tv.getText().toString().trim();
+                            id_main_tv.setText(tx + "\r\n" + info.getCode() + info.getMsg());
+                        }
+                    }
+                }.execute();
             }
         });
     }

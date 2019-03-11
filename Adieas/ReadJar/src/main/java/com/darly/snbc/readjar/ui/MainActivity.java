@@ -1,5 +1,6 @@
 package com.darly.snbc.readjar.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -8,11 +9,22 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+import com.darly.snbc.jarlib.bean.BaseResponse;
+import com.darly.snbc.jarlib.common.JarlibListener;
+import com.darly.snbc.jarlib.common.observer.JarLibInitCfg;
+import com.darly.snbc.jarlib.controller.AirController;
+import com.darly.snbc.readjar.BuildConfig;
 import com.darly.snbc.readjar.R;
 import com.darly.snbc.readjar.common.ScheduledTask;
 import com.darly.snbc.readjar.common.ScheduledTaskListener;
@@ -25,6 +37,8 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -56,9 +70,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     private long checkZDoorTimes = 0;//检查闸门状态次数，用来记时闸门60秒发一次广播
     private long checkNoErrorTimes = 0;//检查无故障次数，用来记时无故障60秒发一次广播
     /*无状态变化时广播间隔时间*/
-    private int NOSTATEDOORTIME = 60*1000;//柜门在无状态变化的情况，发送广播间隔时间，60秒
-    private int NOSTATEZDOORTIME = 60*1000;//闸门在无状态变化的情况，发送广播间隔时间，60秒
-    private int NOSTATEERRORTIME = 60*1000;//无故障状态变化的情况，发送广播间隔时间，60秒
+    private int NOSTATEDOORTIME = 60 * 1000;//柜门在无状态变化的情况，发送广播间隔时间，60秒
+    private int NOSTATEZDOORTIME = 60 * 1000;//闸门在无状态变化的情况，发送广播间隔时间，60秒
+    private int NOSTATEERRORTIME = 60 * 1000;//无故障状态变化的情况，发送广播间隔时间，60秒
     //整机状态
     private int[] orfgWorkState;
 
@@ -81,14 +95,40 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         orfgWorkState = new int[]{-1};
     }
 
+    int i = 0;
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.id_main_btn:
-                findJar();
+//                findJar();
+                i++;
+                showToast("調用內容111111111111111111111111111111111111111111\r\n111111111111111111111111111111111111111111111\r\n1111111111111111111----" + i, 6000);
+//                //启动测试调用。
+//                JarLibInitCfg.getInstance().initConfig(BuildConfig.DEBUG, this);
+//                int key = AirController.getDefault(001);
+//                Log.i(getClass().getSimpleName(), "接口調用返回" + key);
+//
+//                AirController.getDefault(001, new JarlibListener<BaseResponse>() {
+//                    @Override
+//                    public void onStart() {
+//                        Log.i(getClass().getSimpleName(), "異步啟動接口調用返回");
+//                    }
+//
+//                    @Override
+//                    public void onSuccess(BaseResponse baseResponse) {
+//                        Log.i(getClass().getSimpleName(), "異步啟動接口調用返回" + baseResponse.getCode() + baseResponse.getMsg());
+//                    }
+//
+//                    @Override
+//                    public void onFailed(BaseResponse baseResponse) {
+//                        Log.i(getClass().getSimpleName(), "異步啟動接口調用返回" + baseResponse.getCode() + baseResponse.getMsg());
+//                    }
+//                });
                 break;
             case R.id.id_main_start:
-                ScheduledTask.getInstance().excuteSchedule();
+                CustomStylesToast();
+//                ScheduledTask.getInstance().excuteSchedule();
                 break;
             case R.id.id_main_pause:
                 ScheduledTask.getInstance().onPauseTask();
@@ -215,7 +255,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
             sendBroadcast(intent);
             Log.i(getClass().getSimpleName(), "售货机操作的柜机:" + boxIndex + assetCode + vemidValue + boxIDState + "-柜门发送广播----------------------");
-        } else if (System.currentTimeMillis()-checkDoorTimes >= NOSTATEDOORTIME) {
+        } else if (System.currentTimeMillis() - checkDoorTimes >= NOSTATEDOORTIME) {
             //记时超过60秒后发送广播
             checkDoorTimes = System.currentTimeMillis();//计数清零
             Log.i(getClass().getSimpleName(), "售货机操作的柜机:" + boxIndex + assetCode + vemidValue + boxIDState + "-柜门超过60s状态无变化发送广播----------------------");
@@ -224,7 +264,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             orsenZState = senZState;
             checkZDoorTimes = System.currentTimeMillis();//计数清零
             Log.i(getClass().getSimpleName(), "售货机操作的柜机:" + boxIndex + assetCode + vemidValue + boxIDState + "-闸机发送广播----------------------");
-        } else if (System.currentTimeMillis()-checkZDoorTimes >= NOSTATEZDOORTIME) {
+        } else if (System.currentTimeMillis() - checkZDoorTimes >= NOSTATEZDOORTIME) {
             orsenZState = senZState;
             checkZDoorTimes = System.currentTimeMillis();//计数清零
             Log.i(getClass().getSimpleName(), "售货机操作的柜机:" + boxIndex + assetCode + vemidValue + boxIDState + "-闸机超过60s状态无变化发送广播----------------------");
@@ -243,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     @Override
     public void errorPoolTime(int boxIndex, byte[] faultClean, byte[] faultReport, String assetCode, String vemidValue, int boxIDState) {
         if (faultReport != null && faultReport[0] <= 0) {
-            if (System.currentTimeMillis()-checkNoErrorTimes >= NOSTATEERRORTIME) {//60秒无故障上报
+            if (System.currentTimeMillis() - checkNoErrorTimes >= NOSTATEERRORTIME) {//60秒无故障上报
                 checkNoErrorTimes = System.currentTimeMillis();//故障上报，清零无故障上报计数
                 Log.i(getClass().getSimpleName(), "售货机操作的柜机:" + boxIndex + assetCode + vemidValue + boxIDState + "-故障状态超过60s状态无变化发送广播----------------------");
             } else {
@@ -270,5 +310,73 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     @Override
     public void onStopScheduledTask(String msg) {
         Log.i(getClass().getSimpleName(), msg);
+    }
+
+
+    private Toast toast;
+
+
+    private void CustomStylesToast() {
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.toast_style,
+                (ViewGroup) findViewById(R.id.ll_Toast));
+        ImageView image = (ImageView) layout.findViewById(R.id.iv_ImageToast);
+        image.setImageResource(R.mipmap.ic_launcher);
+        TextView text = (TextView) layout.findViewById(R.id.tv_TextToast);
+        text.setText("自定义Toast的样式");
+        Toast toast = new Toast(this);
+        toast.setGravity(Gravity.LEFT | Gravity.TOP, 20, 50);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(layout);
+        toast.show();
+
+    }
+
+    private long during = 0;
+    private Timer timer = null;
+
+    private void showToast(String msg, int time) {
+        if (toast == null) {
+            toast = Toast.makeText(this, msg, Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+        } else {
+            toast.setText(msg);
+        }
+        long du = System.currentTimeMillis();
+        if (du - during >= time) {
+            during = du;
+            timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    toast.show();
+                }
+            }, 0, 3000);// 3000表示点击按钮之后，Toast延迟3000ms后显示
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    toast.cancel();
+                    timer.cancel();
+                }
+            }, time);// 5000表示Toast显示时间为5秒
+        } else {
+            //Toast存在
+            timer.cancel();
+
+            timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    toast.show();
+                }
+            }, 0, 3000);// 3000表示点击按钮之后，Toast延迟3000ms后显示
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    toast.cancel();
+                    timer.cancel();
+                }
+            }, du - during+time);// 5000表示Toast显示时间为5秒
+        }
     }
 }

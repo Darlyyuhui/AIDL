@@ -18,7 +18,7 @@ public class BaseInfo implements Parcelable {
     private int code;
     private String msg;
     private int random;
-    private InterfaceVersion head;
+    private InterfaceVersion head = new InterfaceVersion();
     private String body;//加密的对象体
 
     public int getCode() {
@@ -35,14 +35,6 @@ public class BaseInfo implements Parcelable {
 
     public void setMsg(String msg) {
         this.msg = msg;
-    }
-
-    public InterfaceVersion getHead() {
-        return head;
-    }
-
-    public void setHead(InterfaceVersion head) {
-        this.head = head;
     }
 
     public String getBody() {

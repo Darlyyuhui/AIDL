@@ -21,21 +21,12 @@ public class InParamer implements Parcelable {
     private String random ;//产生加密过程的随机数
     private MethodEnum method; //调用的接口名称
 
-
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getVersion() {
         return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
     }
 
     public String getParamer() {
@@ -96,6 +87,7 @@ public class InParamer implements Parcelable {
     };
 
     public enum MethodEnum {
+        GETFACTORYCODE("GetFactoryCode"),//售卖端获取出厂编码接口，中间层通过文件进行读取。
         BVMINIT("BVMInit"),//中间层初始化接口，根据现在要求传递参数。
         BVMINITXYROAD("BVMInitXYRoad"),//进行货道扫描，当设备重新上电或层数、货道变动时调用，根据现在要求传递参数。
         BVMQUERYINITRESULT ("BVMQueryInitResult"),//查询货道扫描结果，根据现在要求传递参数。

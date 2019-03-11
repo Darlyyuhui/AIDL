@@ -1,19 +1,16 @@
 package com.darly.snbc.adieas.ui.biz;
 
-import android.os.RemoteException;
-
 import com.darly.common.DLog;
 import com.darly.common.retrofit.RxjavaRetrofitRequestUtil;
 import com.darly.snbc.adieas.R;
 import com.darly.snbc.adieas.base.BaseApplication;
+import com.darly.snbc.adieas.base.NdkReflect;
 import com.darly.snbc.adieas.common.bolts.tasks.Task;
 import com.darly.snbc.adieas.common.listener.BaseServerListener;
 import com.darly.snbc.adieas.common.retrofit.HttpInterface;
 import com.google.gson.JsonObject;
-import com.snbc.bcvm.BCVMZK;
 import com.snbc.bvm.SeverAidlCallBack;
 import com.snbc.bvm.bean.BaseInfo;
-import com.snbc.bvm.bean.InterfaceVersion;
 import com.snbc.bvm.bean.ParamerInfo;
 import com.snbc.bvm.bean.ResultInfo;
 
@@ -38,16 +35,12 @@ import rx.schedulers.Schedulers;
  */
 public class ServerBiz implements BaseServerListener {
 
-    private final Executor SERIAL_EXECUTOR = Executors.newSingleThreadExecutor();
-
-
     @Override
     public BaseInfo paramerEmpty() {
         DLog.d(getClass().getSimpleName() + "paramerEmpty");
         BaseInfo info = new BaseInfo();
         info.setCode(-40031);
         info.setMsg(BaseApplication.getMessage(R.string.st_null_paramer));
-        info.setHead(new InterfaceVersion());
         return info;
     }
 
@@ -87,171 +80,6 @@ public class ServerBiz implements BaseServerListener {
 
     }
 
-    @Override
-    public BaseInfo BVMOpenPort(ParamerInfo paramer, SeverAidlCallBack callBack) {
-        DLog.d(getClass().getSimpleName(), "BVMOpenPort");
-        BaseInfo info = new BaseInfo();
-        ResultInfo result = new ResultInfo();
-        //打开端口
-        int response = BCVMZK.Int_IniZKComm();
-        if (response == 99) {
-            info.setCode(response);
-            info.setMsg("BVMOpenPort" + BaseApplication.getMessage(R.string.st_opt_success));
-            info.setHead(new InterfaceVersion());
-            return info;
-        } else {
-            info.setCode(response);
-            info.setMsg("BVMOpenPort" + BaseApplication.getMessage(R.string.st_opt_failed));
-            info.setHead(new InterfaceVersion());
-            return info;
-        }
-    }
-
-    @Override
-    public BaseInfo BVMClosePort(ParamerInfo paramer, SeverAidlCallBack callBack) {
-        DLog.d(getClass().getSimpleName(), "BVMClosePort");
-        BaseInfo info = new BaseInfo();
-        ResultInfo result = new ResultInfo();
-        ArrayList<String> list = new ArrayList<>();
-        if (paramer.getBoxid() != 0) {
-            info.setCode(200);
-            info.setMsg("BVMClosePort" + BaseApplication.getMessage(R.string.st_opt_success));
-            info.setHead(new InterfaceVersion());
-            list.add("BVMClosePort Test Message");
-            result.setResult(list);
-            info.setBody(result.toJson());
-            return info;
-        } else {
-            info.setCode(120);
-            info.setHead(new InterfaceVersion());
-            info.setMsg("BVMClosePort" + BaseApplication.getMessage(R.string.st_opt_failed));
-            return info;
-        }
-    }
-
-    @Override
-    public BaseInfo BVMGetRunningState(ParamerInfo paramer, SeverAidlCallBack callBack) {
-        DLog.d(getClass().getSimpleName(), "BVMGetRunningState");
-        BaseInfo info = new BaseInfo();
-        ResultInfo result = new ResultInfo();
-        ArrayList<String> list = new ArrayList<>();
-        if (paramer.getBoxid() < 0) {
-            info.setCode(-100);
-            info.setMsg("参数传递错误，boxid不能小于零");
-            return info;
-        } else {
-            int[] statebuf = new int[32];
-            int[] devinfo = new int[256];
-            devinfo[0] = paramer.getBoxid();
-            devinfo[1] = 0;
-            int response = BCVMZK.Int_GetstorHouseNum(devinfo, statebuf);
-            if (response == 99) {
-                info.setCode(response);
-                info.setMsg("BVMGetRunningState" + BaseApplication.getMessage(R.string.st_opt_success));
-                list.add(String.valueOf(statebuf[0]));
-                result.setResult(list);
-                info.setHead(new InterfaceVersion());
-                info.setBody(result.toJson());
-                return info;
-            } else {
-                info.setCode(response);
-                info.setHead(new InterfaceVersion());
-                info.setMsg("BVMGetRunningState" + BaseApplication.getMessage(R.string.st_opt_failed));
-                return info;
-            }
-        }
-    }
-
-    @Override
-    public BaseInfo BVMGetDoorState(ParamerInfo paramer, final SeverAidlCallBack callBack) {
-        DLog.d(getClass().getSimpleName(), "BVMGetDoorState");
-        BaseInfo info = new BaseInfo();
-        ResultInfo result = new ResultInfo();
-        ArrayList<String> list = new ArrayList<>();
-        try {
-            callBack.onInvokeStart();
-            Task.call(new Callable<Void>() {
-                @Override
-                public Void call() throws Exception {
-                    Thread.sleep(5000);
-                    DLog.d(getClass().getSimpleName(), "Thread.sleep(5000);");
-                    BaseInfo info = new BaseInfo();
-                    ResultInfo result = new ResultInfo();
-                    ArrayList<String> list = new ArrayList<>();
-                    if (new Random().nextBoolean()) {
-                        info.setCode(200);
-                        info.setMsg("BVMGetDoorState" + BaseApplication.getMessage(R.string.st_opt_success));
-                        info.setHead(new InterfaceVersion());
-                        list.add("BVMGetDoorState 测试信息");
-                        result.setResult(list);
-                        info.setBody(result.toJson());
-                        callBack.onInvokeSuccess(info);
-                    } else {
-                        info.setCode(120);
-                        info.setHead(new InterfaceVersion());
-                        info.setMsg("BVMGetDoorState" + BaseApplication.getMessage(R.string.st_opt_failed));
-                        callBack.onInvokeFailed(info);
-                    }
-                    return null;
-                }
-            }, SERIAL_EXECUTOR);
-            info.setCode(200);
-            info.setHead(new InterfaceVersion());
-            info.setMsg("BVMGetDoorState" + BaseApplication.getMessage(R.string.st_opt_start));
-            return info;
-        } catch (RemoteException e) {
-            info.setCode(110);
-            info.setHead(new InterfaceVersion());
-            info.setMsg("BVMGetDoorState" + BaseApplication.getMessage(R.string.st_opt_failed));
-            return info;
-        }
-    }
-
-    @Override
-    public BaseInfo BVMGetFGFault(ParamerInfo paramer, SeverAidlCallBack callBack) {
-        DLog.d(getClass().getSimpleName(), "BVMGetFGFault");
-        BaseInfo info = new BaseInfo();
-        ResultInfo result = new ResultInfo();
-        ArrayList<String> list = new ArrayList<>();
-
-        if (new Random().nextBoolean()) {
-            info.setCode(200);
-            info.setMsg("BVMGetFGFault" + BaseApplication.getMessage(R.string.st_opt_success));
-            list.add("BVMGetFGFault 测试信息");
-            result.setResult(list);
-            info.setBody(result.toJson());
-            info.setHead(new InterfaceVersion());
-            return info;
-        } else {
-            info.setCode(120);
-            info.setHead(new InterfaceVersion());
-            info.setMsg("BVMGetFGFault" + BaseApplication.getMessage(R.string.st_opt_failed));
-            return info;
-        }
-    }
-
-    @Override
-    public BaseInfo BVMCleanSysFault(ParamerInfo paramer, SeverAidlCallBack callBack) {
-        DLog.d(getClass().getSimpleName(), "BVMCleanSysFault");
-        BaseInfo info = new BaseInfo();
-        ResultInfo result = new ResultInfo();
-        ArrayList<String> list = new ArrayList<>();
-
-        if (new Random().nextBoolean()) {
-            info.setCode(200);
-            info.setMsg("BVMCleanSysFault" + BaseApplication.getMessage(R.string.st_opt_success));
-            list.add("BVMCleanSysFault 测试信息");
-            result.setResult(list);
-            info.setBody(result.toJson());
-            info.setHead(new InterfaceVersion());
-            return info;
-        } else {
-            info.setCode(120);
-            info.setHead(new InterfaceVersion());
-            info.setMsg("BVMCleanSysFault" + BaseApplication.getMessage(R.string.st_opt_failed));
-            return info;
-        }
-    }
 
     @Override
     public BaseInfo BVMInitXYRoad(ParamerInfo paramer, SeverAidlCallBack callBack) {
@@ -266,14 +94,133 @@ public class ServerBiz implements BaseServerListener {
             list.add("BVMInitXYRoad 测试信息");
             result.setResult(list);
             info.setBody(result.toJson());
-            info.setHead(new InterfaceVersion());
             return info;
         } else {
             info.setCode(120);
-            info.setHead(new InterfaceVersion());
             info.setMsg("BVMInitXYRoad" + BaseApplication.getMessage(R.string.st_opt_failed));
             return info;
         }
+    }
+
+    @Override
+    public BaseInfo BVMQueryInitResult(ParamerInfo paramer, SeverAidlCallBack callBack) {
+        return null;
+    }
+
+    @Override
+    public BaseInfo BVMMoveSaleGoodsPro(ParamerInfo paramer, SeverAidlCallBack callBack) {
+        return null;
+    }
+
+    @Override
+    public BaseInfo BVMCtrlSaleGoodsStepPro(ParamerInfo paramer, SeverAidlCallBack callBack) {
+        return null;
+    }
+
+    @Override
+    public BaseInfo BVMStartShip(ParamerInfo paramer, SeverAidlCallBack callBack) {
+        DLog.d(getClass().getSimpleName(), "BVMStartShip");
+        BaseInfo info = new BaseInfo();
+        startCheck("BVMStartShip");
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        info.setCode(200);
+        info.setMsg("BVMStartShip" + BaseApplication.getMessage(R.string.st_opt_start));
+        return info;
+    }
+
+    @Override
+    public BaseInfo BVMElecDoorCtrl(ParamerInfo paramer, SeverAidlCallBack callBack) {
+        DLog.d(getClass().getSimpleName(), "BVMElecDoorCtrl");
+        BaseInfo info = new BaseInfo();
+        startCheck("BVMElecDoorCtrl");
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        info.setCode(200);
+        info.setMsg("BVMElecDoorCtrl" + BaseApplication.getMessage(R.string.st_opt_start));
+        return info;
+    }
+
+
+
+    @Override
+    public BaseInfo BVMQueryBoxInfo(ParamerInfo paramer, SeverAidlCallBack callBack) {
+        return null;
+    }
+
+    @Override
+    public BaseInfo BVMSetColdHeatModel(ParamerInfo paramer, SeverAidlCallBack callBack) {
+        return null;
+    }
+
+    @Override
+    public BaseInfo BVMGetColdHeatModel(ParamerInfo paramer, SeverAidlCallBack callBack) {
+        return null;
+    }
+
+    @Override
+    public BaseInfo BVMSetColdModel(ParamerInfo paramer, SeverAidlCallBack callBack) {
+        return null;
+    }
+
+    @Override
+    public BaseInfo BVMGetColdMode(ParamerInfo paramer, SeverAidlCallBack callBack) {
+        return null;
+    }
+
+    @Override
+    public BaseInfo BVMSetColdTemp(ParamerInfo paramer, SeverAidlCallBack callBack) {
+        return null;
+    }
+
+    @Override
+    public BaseInfo BVMGetColdTemp(ParamerInfo paramer, SeverAidlCallBack callBack) {
+        return null;
+    }
+
+    @Override
+    public BaseInfo BVMSetHeatTemp(ParamerInfo paramer, SeverAidlCallBack callBack) {
+        return null;
+    }
+
+    @Override
+    public BaseInfo BVMGetHeatTemp(ParamerInfo paramer, SeverAidlCallBack callBack) {
+        return null;
+    }
+
+    @Override
+    public BaseInfo BVMGetColdHeatTemp(ParamerInfo paramer, SeverAidlCallBack callBack) {
+        return null;
+    }
+
+
+    private void startCheck(final String key) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    NdkReflect.getInstance().onStepOneCallBack(key,0);
+                    Thread.sleep(1000);
+                    DLog.d(getClass().getSimpleName(), key+Thread.currentThread()+"Thread.sleep(1000);");
+                    NdkReflect.getInstance().onStepTwoCallBack(key,11);
+                    Thread.sleep(1500);
+                    DLog.d(getClass().getSimpleName(), key+Thread.currentThread()+"Thread.sleep(1500);");
+                    NdkReflect.getInstance().onStepThreeCallBack(key,12);
+                    Thread.sleep(2000);
+                    DLog.d(getClass().getSimpleName(), key+Thread.currentThread()+"Thread.sleep(2000);");
+                    NdkReflect.getInstance().onStepFourCallBack(key,-1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
     }
 
 }

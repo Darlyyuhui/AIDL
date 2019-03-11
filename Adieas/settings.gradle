@@ -1,1 +1,2 @@
-include ':Server',':Clint',':ReadJar'
+include ':ReportJar'
+include 'Server','Clint','ReadJar',':JarLib'

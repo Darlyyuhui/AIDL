@@ -17,18 +17,35 @@ public interface BaseServerListener {
 
     BaseInfo BVMInit(ParamerInfo paramer, SeverAidlCallBack callBack);
 
-    BaseInfo BVMOpenPort(ParamerInfo paramer, SeverAidlCallBack callBack);
-
-    BaseInfo BVMClosePort(ParamerInfo paramer, SeverAidlCallBack callBack);
-
-    BaseInfo BVMGetRunningState(ParamerInfo paramer, SeverAidlCallBack callBack);
-
-    BaseInfo BVMGetDoorState(ParamerInfo paramer, SeverAidlCallBack callBack);
-
-    BaseInfo BVMGetFGFault(ParamerInfo paramer, SeverAidlCallBack callBack);
-
-    BaseInfo BVMCleanSysFault(ParamerInfo paramer, SeverAidlCallBack callBack);
-
-    //货道扫描
     BaseInfo BVMInitXYRoad(ParamerInfo paramer, SeverAidlCallBack callBack);
+
+    BaseInfo BVMQueryInitResult(ParamerInfo paramer, SeverAidlCallBack callBack);
+
+    BaseInfo BVMMoveSaleGoodsPro(ParamerInfo paramer, SeverAidlCallBack callBack);
+
+    BaseInfo BVMCtrlSaleGoodsStepPro(ParamerInfo paramer, SeverAidlCallBack callBack);
+
+    BaseInfo BVMStartShip(ParamerInfo paramer, SeverAidlCallBack callBack);
+
+    BaseInfo BVMElecDoorCtrl(ParamerInfo paramer, SeverAidlCallBack callBack);
+
+    BaseInfo BVMQueryBoxInfo(ParamerInfo paramer, SeverAidlCallBack callBack);
+
+    BaseInfo BVMSetColdHeatModel(ParamerInfo paramer, SeverAidlCallBack callBack);
+
+    BaseInfo BVMGetColdHeatModel(ParamerInfo paramer, SeverAidlCallBack callBack);
+
+    BaseInfo BVMSetColdModel(ParamerInfo paramer, SeverAidlCallBack callBack);
+
+    BaseInfo BVMGetColdMode(ParamerInfo paramer, SeverAidlCallBack callBack);
+
+    BaseInfo BVMSetColdTemp(ParamerInfo paramer, SeverAidlCallBack callBack);
+
+    BaseInfo BVMGetColdTemp(ParamerInfo paramer, SeverAidlCallBack callBack);
+
+    BaseInfo BVMSetHeatTemp(ParamerInfo paramer, SeverAidlCallBack callBack);
+
+    BaseInfo BVMGetHeatTemp(ParamerInfo paramer, SeverAidlCallBack callBack);
+
+    BaseInfo BVMGetColdHeatTemp(ParamerInfo paramer, SeverAidlCallBack callBack);
 }

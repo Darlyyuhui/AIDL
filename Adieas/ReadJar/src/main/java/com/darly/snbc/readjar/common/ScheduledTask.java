@@ -90,6 +90,7 @@ public class ScheduledTask {
         }
     }
 
+
     public void onPauseTask() {
         isScheduledStop = true;
         scheduledTaskListener.onPauseScheduledTask("轮询任务暂停");
@@ -159,5 +160,4 @@ public class ScheduledTask {
             }
         }
     };
-
 }

@@ -13,4 +13,6 @@ interface ServerAidlInterface {
     BaseInfo onBinder(in InParamer paramer,in SeverAidlCallBack callback);
 
     int Init(in String key);
+
+
 }

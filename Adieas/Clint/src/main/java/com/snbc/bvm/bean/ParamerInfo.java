@@ -13,7 +13,7 @@ import java.util.Map;
  * 公司：山东新北洋信息技术股份有限公司西安分公司
  * 邮箱：zhangyuhui@newbeiyang.com
  */
-public class ParamerInfo {
+public class ParamerInfo{
     private int boxid;
     private int jboxid;
     private int workmode;
