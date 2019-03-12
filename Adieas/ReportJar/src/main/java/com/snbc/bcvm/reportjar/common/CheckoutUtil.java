@@ -4,10 +4,12 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.snbc.bcvm.reportjar.base.ReportJarCfg;
 import com.snbc.bcvm.reportjar.entity.ErrorEntity;
 import com.snbc.bcvm.reportjar.entity.ResponseEntity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -42,22 +44,6 @@ public class CheckoutUtil {
         return responseEntity;
     }
 
-    /**
-     * 检查不含boxId时的参数检查封装
-     */
-    public static <T> ResponseEntity<T> checkoutParams(CheckoutParams checkoutJudge, String TAG, String fucName, ErrorEntity errorEntity, ResponseSuccess<T> responseSuccess) {
-        ResponseEntity<T> responseEntity = new ResponseEntity<>();
-        if (checkoutJudge.onJudge()) {
-            String json = checkoutJudge.onSuccess();
-            setCodeMessage(TAG, fucName, json, responseEntity, responseSuccess);
-        } else {
-            responseEntity.setCode(CommonConst.ERROR_PARAM);
-            responseEntity.setMessage("入参非法");
-            responseEntity.setErrorEntity(errorEntity);
-            Log.e(TAG, "Fail " + fucName + ",输出===>" + responseEntity.getMessage());
-        }
-        return responseEntity;
-    }
 
     /**
      * 检查调用so库是否返回成功
@@ -106,6 +92,17 @@ public class CheckoutUtil {
             ErrorEntity errorEntity = JSON.parseObject(result, new TypeReference<ErrorEntity>() {
             });
             responseEntity.setErrorEntity(errorEntity);
+            if (!ReportJarCfg.isInit()){
+                //未初始化，为Driver用户，需要剔除故障参数。
+                if (errorEntity!=null&&errorEntity.getBody()!=null&&errorEntity.getBody().getError()!=null){
+                    List<ErrorEntity.BodyBean.ErrorBean> list = errorEntity.getBody().getError();
+                    for (ErrorEntity.BodyBean.ErrorBean bean:list){
+                        bean.setReason(null);
+                        bean.setSolution(null);
+                        bean.setSystem(null);
+                    }
+                }
+            }
             return responseEntity;
         } catch (Exception e) {
             responseEntity.setCode(CommonConst.ERROR_PARSE_JSON);

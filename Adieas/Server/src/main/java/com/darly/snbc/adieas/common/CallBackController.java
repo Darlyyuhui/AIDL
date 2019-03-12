@@ -9,23 +9,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 保存上层调用接口，使其全局化可用
- * 包名称：com.snbc.bvm.common
- * 作者：zhangyuhui 项目名称：Vem-Rectification
- * 日期：2019/3/7 18:25
+ * 保存回调接口的单例类，方便级联使用。
+ * 包名称：com.darly.snbc.adieas.common
+ * 作者：zhangyuhui 项目名称：Adieas
+ * 日期：2019/3/12 11:20
  * 公司：山东新北洋信息技术股份有限公司西安分公司
  * 邮箱：zhangyuhui@newbeiyang.com
  */
-public class BackeShow {
-    private static BackeShow instance;
+public class CallBackController {
+    private static CallBackController instance;
     private Map<String ,SeverAidlCallBack> callBackMap = new HashMap<String ,SeverAidlCallBack>();
-    private BackeShow() {
+    private CallBackController() {
     }
-    public static BackeShow getInstance() {
-        if (instance == null) {
-            instance = new BackeShow();
-        }
-        return instance;
+    private  static class CallBackControllerHolder{
+        static CallBackController instance = new CallBackController();
+    }
+    public static CallBackController getInstance() {
+        return CallBackControllerHolder.instance;
     }
     /** 存储上层应用传递的接口信息
      * @param key 识别信息
@@ -57,4 +57,5 @@ public class BackeShow {
             }
         }
     }
+
 }

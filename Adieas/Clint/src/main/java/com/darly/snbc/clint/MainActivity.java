@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                                 String id = UUID.randomUUID().toString();
                                 paramer.setRandom(id);
                                 paramer.setParamer(paramerInfo.toJson());
-                                paramer.setMethod(InParamer.MethodEnum.BVMELECDOORCTRL);
+                                paramer.setMethod(InParamer.MethodEnum.BVMGETCOLDHEATTEMP);
                                 BaseInfo info = anInterface.onBinder(paramer, new SeverAidlCallBack.Stub() {
                                     @Override
                                     public void onInvokeStart() throws RemoteException {

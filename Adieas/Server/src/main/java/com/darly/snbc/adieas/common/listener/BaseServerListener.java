@@ -1,6 +1,5 @@
 package com.darly.snbc.adieas.common.listener;
 
-import com.snbc.bvm.SeverAidlCallBack;
 import com.snbc.bvm.bean.BaseInfo;
 import com.snbc.bvm.bean.ParamerInfo;
 
@@ -15,37 +14,37 @@ import com.snbc.bvm.bean.ParamerInfo;
 public interface BaseServerListener {
     BaseInfo paramerEmpty();
 
-    BaseInfo BVMInit(ParamerInfo paramer, SeverAidlCallBack callBack);
+    BaseInfo BVMInit(ParamerInfo paramer);
 
-    BaseInfo BVMInitXYRoad(ParamerInfo paramer, SeverAidlCallBack callBack);
+    BaseInfo BVMInitXYRoad(ParamerInfo paramer);
 
-    BaseInfo BVMQueryInitResult(ParamerInfo paramer, SeverAidlCallBack callBack);
+    BaseInfo BVMQueryInitResult(ParamerInfo paramer);
 
-    BaseInfo BVMMoveSaleGoodsPro(ParamerInfo paramer, SeverAidlCallBack callBack);
+    BaseInfo BVMMoveSaleGoodsPro(ParamerInfo paramer);
 
-    BaseInfo BVMCtrlSaleGoodsStepPro(ParamerInfo paramer, SeverAidlCallBack callBack);
+    BaseInfo BVMCtrlSaleGoodsStepPro(ParamerInfo paramer);
 
-    BaseInfo BVMStartShip(ParamerInfo paramer, SeverAidlCallBack callBack);
+    BaseInfo BVMStartShip(ParamerInfo paramer);
 
-    BaseInfo BVMElecDoorCtrl(ParamerInfo paramer, SeverAidlCallBack callBack);
+    BaseInfo BVMElecDoorCtrl(ParamerInfo paramer);
 
-    BaseInfo BVMQueryBoxInfo(ParamerInfo paramer, SeverAidlCallBack callBack);
+    BaseInfo BVMQueryBoxInfo(ParamerInfo paramer);
 
-    BaseInfo BVMSetColdHeatModel(ParamerInfo paramer, SeverAidlCallBack callBack);
+    BaseInfo BVMSetColdHeatModel(ParamerInfo paramer);
 
-    BaseInfo BVMGetColdHeatModel(ParamerInfo paramer, SeverAidlCallBack callBack);
+    BaseInfo BVMGetColdHeatModel(ParamerInfo paramer);
 
-    BaseInfo BVMSetColdModel(ParamerInfo paramer, SeverAidlCallBack callBack);
+    BaseInfo BVMSetColdModel(ParamerInfo paramer);
 
-    BaseInfo BVMGetColdMode(ParamerInfo paramer, SeverAidlCallBack callBack);
+    BaseInfo BVMGetColdMode(ParamerInfo paramer);
 
-    BaseInfo BVMSetColdTemp(ParamerInfo paramer, SeverAidlCallBack callBack);
+    BaseInfo BVMSetColdTemp(ParamerInfo paramer);
 
-    BaseInfo BVMGetColdTemp(ParamerInfo paramer, SeverAidlCallBack callBack);
+    BaseInfo BVMGetColdTemp(ParamerInfo paramer);
 
-    BaseInfo BVMSetHeatTemp(ParamerInfo paramer, SeverAidlCallBack callBack);
+    BaseInfo BVMSetHeatTemp(ParamerInfo paramer);
 
-    BaseInfo BVMGetHeatTemp(ParamerInfo paramer, SeverAidlCallBack callBack);
+    BaseInfo BVMGetHeatTemp(ParamerInfo paramer);
 
-    BaseInfo BVMGetColdHeatTemp(ParamerInfo paramer, SeverAidlCallBack callBack);
+    BaseInfo BVMGetColdHeatTemp(ParamerInfo paramer);
 }

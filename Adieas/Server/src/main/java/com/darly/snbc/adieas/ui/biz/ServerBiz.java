@@ -1,24 +1,26 @@
 package com.darly.snbc.adieas.ui.biz;
 
+import com.alibaba.fastjson.JSON;
 import com.darly.common.DLog;
 import com.darly.common.retrofit.RxjavaRetrofitRequestUtil;
 import com.darly.snbc.adieas.R;
 import com.darly.snbc.adieas.base.BaseApplication;
-import com.darly.snbc.adieas.base.NdkReflect;
-import com.darly.snbc.adieas.common.bolts.tasks.Task;
 import com.darly.snbc.adieas.common.listener.BaseServerListener;
 import com.darly.snbc.adieas.common.retrofit.HttpInterface;
 import com.google.gson.JsonObject;
-import com.snbc.bvm.SeverAidlCallBack;
+import com.snbc.bcvm.NdkReflect;
+import com.snbc.bcvm.reportjar.business.ServerDriverManagerController;
+import com.snbc.bcvm.reportjar.entity.ErrorEntity;
+import com.snbc.bcvm.reportjar.entity.ResponseEntity;
+import com.snbc.bcvm.reportjar.entity.TempEntity;
 import com.snbc.bvm.bean.BaseInfo;
+import com.snbc.bvm.bean.ErrorInfo;
 import com.snbc.bvm.bean.ParamerInfo;
 import com.snbc.bvm.bean.ResultInfo;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -45,7 +47,7 @@ public class ServerBiz implements BaseServerListener {
     }
 
     @Override
-    public BaseInfo BVMInit(ParamerInfo paramer, SeverAidlCallBack callBack) {
+    public BaseInfo BVMInit(ParamerInfo paramer) {
         DLog.d(getClass().getSimpleName(), "BVMInit");
         BaseInfo info = new BaseInfo();
         ResultInfo result = new ResultInfo();
@@ -82,7 +84,7 @@ public class ServerBiz implements BaseServerListener {
 
 
     @Override
-    public BaseInfo BVMInitXYRoad(ParamerInfo paramer, SeverAidlCallBack callBack) {
+    public BaseInfo BVMInitXYRoad(ParamerInfo paramer) {
         DLog.d(getClass().getSimpleName(), "BVMInitXYRoad");
         BaseInfo info = new BaseInfo();
         ResultInfo result = new ResultInfo();
@@ -103,22 +105,22 @@ public class ServerBiz implements BaseServerListener {
     }
 
     @Override
-    public BaseInfo BVMQueryInitResult(ParamerInfo paramer, SeverAidlCallBack callBack) {
+    public BaseInfo BVMQueryInitResult(ParamerInfo paramer) {
         return null;
     }
 
     @Override
-    public BaseInfo BVMMoveSaleGoodsPro(ParamerInfo paramer, SeverAidlCallBack callBack) {
+    public BaseInfo BVMMoveSaleGoodsPro(ParamerInfo paramer) {
         return null;
     }
 
     @Override
-    public BaseInfo BVMCtrlSaleGoodsStepPro(ParamerInfo paramer, SeverAidlCallBack callBack) {
+    public BaseInfo BVMCtrlSaleGoodsStepPro(ParamerInfo paramer) {
         return null;
     }
 
     @Override
-    public BaseInfo BVMStartShip(ParamerInfo paramer, SeverAidlCallBack callBack) {
+    public BaseInfo BVMStartShip(ParamerInfo paramer) {
         DLog.d(getClass().getSimpleName(), "BVMStartShip");
         BaseInfo info = new BaseInfo();
         startCheck("BVMStartShip");
@@ -133,7 +135,7 @@ public class ServerBiz implements BaseServerListener {
     }
 
     @Override
-    public BaseInfo BVMElecDoorCtrl(ParamerInfo paramer, SeverAidlCallBack callBack) {
+    public BaseInfo BVMElecDoorCtrl(ParamerInfo paramer) {
         DLog.d(getClass().getSimpleName(), "BVMElecDoorCtrl");
         BaseInfo info = new BaseInfo();
         startCheck("BVMElecDoorCtrl");
@@ -150,53 +152,81 @@ public class ServerBiz implements BaseServerListener {
 
 
     @Override
-    public BaseInfo BVMQueryBoxInfo(ParamerInfo paramer, SeverAidlCallBack callBack) {
+    public BaseInfo BVMQueryBoxInfo(ParamerInfo paramer) {
         return null;
     }
 
     @Override
-    public BaseInfo BVMSetColdHeatModel(ParamerInfo paramer, SeverAidlCallBack callBack) {
+    public BaseInfo BVMSetColdHeatModel(ParamerInfo paramer) {
         return null;
     }
 
     @Override
-    public BaseInfo BVMGetColdHeatModel(ParamerInfo paramer, SeverAidlCallBack callBack) {
+    public BaseInfo BVMGetColdHeatModel(ParamerInfo paramer) {
         return null;
     }
 
     @Override
-    public BaseInfo BVMSetColdModel(ParamerInfo paramer, SeverAidlCallBack callBack) {
+    public BaseInfo BVMSetColdModel(ParamerInfo paramer) {
         return null;
     }
 
     @Override
-    public BaseInfo BVMGetColdMode(ParamerInfo paramer, SeverAidlCallBack callBack) {
+    public BaseInfo BVMGetColdMode(ParamerInfo paramer) {
         return null;
     }
 
     @Override
-    public BaseInfo BVMSetColdTemp(ParamerInfo paramer, SeverAidlCallBack callBack) {
+    public BaseInfo BVMSetColdTemp(ParamerInfo paramer) {
         return null;
     }
 
     @Override
-    public BaseInfo BVMGetColdTemp(ParamerInfo paramer, SeverAidlCallBack callBack) {
+    public BaseInfo BVMGetColdTemp(ParamerInfo paramer) {
         return null;
     }
 
     @Override
-    public BaseInfo BVMSetHeatTemp(ParamerInfo paramer, SeverAidlCallBack callBack) {
+    public BaseInfo BVMSetHeatTemp(ParamerInfo paramer) {
         return null;
     }
 
     @Override
-    public BaseInfo BVMGetHeatTemp(ParamerInfo paramer, SeverAidlCallBack callBack) {
+    public BaseInfo BVMGetHeatTemp(ParamerInfo paramer) {
         return null;
     }
 
     @Override
-    public BaseInfo BVMGetColdHeatTemp(ParamerInfo paramer, SeverAidlCallBack callBack) {
-        return null;
+    public BaseInfo BVMGetColdHeatTemp(ParamerInfo paramer) {
+        DLog.d(getClass().getSimpleName(), "BVMGetColdHeatTemp");
+        startCheck("BVMGetColdHeatTemp");
+        //进行参数判断
+        BaseInfo info = new BaseInfo();
+        ResultInfo result = new ResultInfo();
+        ArrayList<String> resultList = new ArrayList<>();
+        result.setResult(resultList);
+        ArrayList<ErrorInfo> errorList = new ArrayList<>();
+        result.setError(errorList);
+        //调用执行
+        ResponseEntity<TempEntity> entity = ServerDriverManagerController.getColdHeatTempReport(paramer.getBoxid());
+        info.setCode(entity.getCode());
+        if (entity.getCode() == 99) {
+            TempEntity succ = entity.getData();
+            resultList.add(JSON.toJSONString(succ));
+            info.setMsg(entity.getMessage());
+        } else {
+            //返回so库错误信息（预留）
+            List<ErrorEntity.BodyBean.ErrorBean> errorEntities = entity.getErrorEntity().getBody().getError();
+            errorSet(errorList, errorEntities);
+        }
+        //进行信息加密;
+        info.setBody(result.toJson());
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return info;
     }
 
 
@@ -221,6 +251,20 @@ public class ServerBiz implements BaseServerListener {
             }
         }).start();
 
+    }
+
+    private void errorSet(ArrayList<ErrorInfo> errorList, List<ErrorEntity.BodyBean.ErrorBean> errorEntities) {
+        if (errorEntities != null) {
+            for (ErrorEntity.BodyBean.ErrorBean bean : errorEntities) {
+                ErrorInfo errorInfo = new ErrorInfo();
+                errorInfo.setCode(bean.getCode());
+                errorInfo.setDisplay(bean.getDisplay());
+                errorInfo.setReason(bean.getReason());
+                errorInfo.setSolution(bean.getSolution());
+                errorInfo.setSystem(bean.getSystem());
+                errorList.add(errorInfo);
+            }
+        }
     }
 
 }

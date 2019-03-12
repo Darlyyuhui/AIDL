@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONException;
-import com.darly.snbc.adieas.common.BackeShow;
+import com.darly.snbc.adieas.common.CallBackController;
 import com.snbc.bvm.ServerAidlInterface;
 import com.snbc.bvm.SeverAidlCallBack;
 import com.snbc.bvm.bean.BaseInfo;
@@ -48,8 +48,10 @@ public class ServerService extends Service {
                         //判断接口定义版本是否相同，版本不同情况下，验证失败。
                         if (presenter.isCurrentVersion(paramer.getId(), paramer.getVersion())) {
                             if (!TextUtils.isEmpty(paramer.getMethod().getDesc())) {
-                                BackeShow.getInstance().setListener(paramer.getMethod().getDesc(),callback);
-                                return presenter.switchMethodCallBack(paramer.getMethod().getDesc(), info, callback);
+                                if (callback!=null) {
+                                    CallBackController.getInstance().setListener(paramer.getMethod().getDesc(), callback);
+                                }
+                                return presenter.switchMethodCallBack(paramer.getMethod().getDesc(), info);
                             } else {
                                 return presenter.emptyParam();
                             }

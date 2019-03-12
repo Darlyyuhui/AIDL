@@ -9,6 +9,7 @@ import com.darly.common.Common;
 import com.darly.snbc.adieas.BuildConfig;
 import com.darly.snbc.adieas.common.retrofit.RetrofitCfg;
 import com.darly.snbc.adieas.ui.server.ServerService;
+import com.snbc.bcvm.reportjar.base.ReportJarInit;
 
 /**
  * 基础Application类
@@ -31,6 +32,8 @@ public class BaseApplication extends Application {
         Common.init().init(this, "Server");//初始化工具类中的缓存集合
         Common.init().initDlog(BuildConfig.DEBUG, "Server");//初始化工具类中的日志
         Common.init().initRetrofit(BaseApplication.getInstance().getVersionCode(), "https://boss.takeware.cn/lms/boss/drive/signInfo/", new RetrofitCfg());//初始化工具类中的网络请求模块
+
+        ReportJarInit.getInstance().initConfig(BuildConfig.DEBUG,this);
 
     }
 

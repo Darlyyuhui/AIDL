@@ -1,10 +1,7 @@
-package com.darly.snbc.adieas.base;
+package com.snbc.bcvm;
 
-import android.os.RemoteException;
 
-import com.darly.snbc.adieas.R;
-import com.darly.snbc.adieas.common.BackeShow;
-import com.snbc.bvm.bean.BaseInfo;
+import android.util.Log;
 
 /**
  * C层通过JNI技术进行反射回调，满足回调机制
@@ -24,15 +21,22 @@ public class NdkReflect {
         return NdkReflectHodler.instance;
     }
 
+
+    private NdkReflectListener ndkReflectListener;
+
+    public void setNdkReflectListener(NdkReflectListener ndkReflectListener) {
+        this.ndkReflectListener = ndkReflectListener;
+    }
+
     /**c层回调上来的方法，过程一回调
      * @param key 识别信息
      * @param code 返回编码信息
      */
     public void onStepOneCallBack(String key,int code) {
-        try {
-            BackeShow.getInstance().getCallBack(key).onInvokeStart();
-        } catch (RemoteException e) {
-            e.printStackTrace();
+        if (ndkReflectListener == null){
+            Log.i("onStepOneCallBack","[接口未初始化...]");
+        }else {
+            ndkReflectListener.onStepOneCallBack(key,code);
         }
     }
     /**c层回调上来的方法，过程二回调
@@ -40,13 +44,10 @@ public class NdkReflect {
      * @param code 返回编码信息
      */
     public void onStepTwoCallBack(String key,int code) {
-        try {
-            BaseInfo info = new BaseInfo();
-            info.setCode(200);
-            info.setMsg(key+"過程操作");
-            BackeShow.getInstance().getCallBack(key).onInvokeSuccess(info);
-        } catch (RemoteException e) {
-            e.printStackTrace();
+        if (ndkReflectListener == null){
+            Log.i("onStepTwoCallBack","[接口未初始化...]");
+        }else {
+            ndkReflectListener.onStepTwoCallBack(key,code);
         }
     }
     /**c层回调上来的方法，过程三回调
@@ -54,13 +55,10 @@ public class NdkReflect {
      * @param code 返回编码信息
      */
     public void onStepThreeCallBack(String key,int code) {
-        try {
-            BaseInfo info = new BaseInfo();
-            info.setCode(200);
-            info.setMsg(key+"過程操作");
-            BackeShow.getInstance().getCallBack(key).onInvokeFailed(info);
-        } catch (RemoteException e) {
-            e.printStackTrace();
+        if (ndkReflectListener == null){
+            Log.i("onStepThreeCallBack","[接口未初始化...]");
+        }else {
+            ndkReflectListener.onStepThreeCallBack(key,code);
         }
     }
     /**c层回调上来的方法，过程四回调
@@ -68,6 +66,10 @@ public class NdkReflect {
      * @param code 返回编码信息
      */
     public void onStepFourCallBack(String key,int code)  {
-        BackeShow.getInstance().releaseCall(key);
+        if (ndkReflectListener == null){
+            Log.i("onStepFourCallBack","[接口未初始化...]");
+        }else {
+            ndkReflectListener.onStepFourCallBack(key,code);
+        }
     }
 }
