@@ -138,7 +138,7 @@ public class ServerPresenter implements NdkReflectListener {
         try {
             BaseInfo info = new BaseInfo();
             info.setCode(200);
-            info.setMsg(key + "過程操作");
+            info.setMsg(key + "回调过程二");
             CallBackController.getInstance().getCallBack(key).onInvokeSuccess(info);
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -150,7 +150,7 @@ public class ServerPresenter implements NdkReflectListener {
         try {
             BaseInfo info = new BaseInfo();
             info.setCode(200);
-            info.setMsg(key + "過程操作");
+            info.setMsg(key + "回调过程三");
             CallBackController.getInstance().getCallBack(key).onInvokeFailed(info);
         } catch (RemoteException e) {
             e.printStackTrace();

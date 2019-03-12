@@ -14,6 +14,10 @@ import com.snbc.bcvm.reportjar.entity.TempEntity;
  */
 public class ServerDriverManagerController {
 
+    public static void BVMInit() {
+
+    }
+
     public static void GetFactoryCode() {
     }
 

@@ -79,7 +79,6 @@ public class ServerBiz implements BaseServerListener {
 
                 );
         return info;
-
     }
 
 
@@ -193,7 +192,35 @@ public class ServerBiz implements BaseServerListener {
 
     @Override
     public BaseInfo BVMGetHeatTemp(ParamerInfo paramer) {
-        return null;
+        DLog.d(getClass().getSimpleName(), "BVMGetHeatTemp");
+        startCheck("BVMGetHeatTemp");
+        //进行参数判断
+        BaseInfo info = new BaseInfo();
+        ResultInfo result = new ResultInfo();
+        ArrayList<String> resultList = new ArrayList<>();
+        result.setResult(resultList);
+        ArrayList<ErrorInfo> errorList = new ArrayList<>();
+        result.setError(errorList);
+        //调用执行
+        ResponseEntity<TempEntity> entity = ServerDriverManagerController.getHeatTempReport(paramer.getBoxid());
+        info.setCode(entity.getCode());
+        if (entity.getCode() == 99) {
+            TempEntity succ = entity.getData();
+            resultList.add(JSON.toJSONString(succ));
+            info.setMsg(entity.getMessage());
+        } else {
+            //返回so库错误信息（预留）
+            List<ErrorEntity.BodyBean.ErrorBean> errorEntities = entity.getErrorEntity().getBody().getError();
+            errorSet(errorList, errorEntities);
+        }
+        //进行信息加密;
+        info.setBody(result.toJson());
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return info;
     }
 
     @Override

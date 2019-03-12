@@ -8,7 +8,11 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONException;
+import com.darly.common.DLog;
 import com.darly.snbc.adieas.common.CallBackController;
+import com.snbc.bcvm.reportjar.business.communication.SerialPortManager;
+import com.snbc.bcvm.reportjar.common.CommonConst;
+import com.snbc.bcvm.reportjar.entity.ResponseEntity;
 import com.snbc.bvm.ServerAidlInterface;
 import com.snbc.bvm.SeverAidlCallBack;
 import com.snbc.bvm.bean.BaseInfo;
@@ -74,4 +78,14 @@ public class ServerService extends Service {
 
     };
 
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        //打开串口
+        ResponseEntity<Integer> result = SerialPortManager.openPort();
+        if (result.getCode() != CommonConst.ERROR_SUCCESS){
+            DLog.i("串口打开失败");
+        }
+    }
 }
