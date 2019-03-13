@@ -1,5 +1,14 @@
 apply plugin: 'com.android.application'
 
+ext.signingFileName = "aidl.jks"
+ext.signingFileStorePassword = "123456"
+ext.signingFileKeyAlias = "server"
+ext.signingFilekeyPassword = "123456"
+// 定义一个打包时间
+def releaseTime() {
+    return new Date().format("yyyyMMddHHmm")
+}
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -10,11 +19,71 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-    buildTypes {
+
+    signingConfigs {
+        //签名的配置 打包命令行：gradlew assembleRelease
         release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            storeFile file(signingFileName)
+            storePassword signingFileStorePassword
+            keyAlias signingFileKeyAlias
+            keyPassword signingFilekeyPassword
         }
+        debug {
+            storeFile file(signingFileName)
+            storePassword signingFileStorePassword
+            keyAlias signingFileKeyAlias
+            keyPassword signingFilekeyPassword
+        }
+    }
+
+    buildTypes {
+        packagingOptions {
+            exclude 'META-INF/DEPENDENCIES'
+            exclude 'META-INF/NOTICE'
+            exclude 'META-INF/LICENSE'
+            exclude 'META-INF/LICENSE.txt'
+            exclude 'META-INF/NOTICE.txt'
+            exclude 'META-INF/ASL2.0'
+            exclude 'META-INF/notice.txt'
+        }
+
+        debug {
+            debuggable true
+            minifyEnabled true  //是否开启混淆
+            shrinkResources true  //去除无用的resource文件
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+            applicationVariants.all { variant ->
+                if (variant.buildType.name.equals('debug')) {
+                    variant.outputs.all { output ->
+                        def outputFile = output.outputFile
+                        if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                            def fileName = "Server_${releaseTime()}_${defaultConfig.versionName}_debug.apk"
+                            outputFileName = fileName
+                        }
+                    }
+                }
+            }
+        }
+        release {
+            minifyEnabled true  //是否开启混淆
+            shrinkResources true  //去除无用的resource文件
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+
+            applicationVariants.all { variant ->
+                if (variant.buildType.name.equals('release')) {
+                    variant.outputs.all { output ->
+                        def outputFile = output.outputFile
+                        if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                            def fileName = "Server_${releaseTime()}_${defaultConfig.versionName}_release.apk"
+                            outputFileName = fileName
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     compileOptions {

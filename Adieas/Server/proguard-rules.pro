@@ -85,3 +85,20 @@
 -keepclassmembers class * {
     void *(**On*Event);
 }
+
+-keep class com.snbc.bvm.SeverAidlCallBack{*;}
+-keep class com.snbc.bvm.ServerAidlInterface{*;}
+-keep public class com.darly.snbc.adieas.ui.biz.ServerBiz{*;}
+-dontwarn com.alibaba.fastjson.**
+-keep class com.alibaba.fastjson.**{*;}
+-keep class com.snbc.bvm.bean.** {*;}
+-keep class com.snbc.bcvm.reportjar.entity.** {*;}
+
+#Jar包混淆
+-keep class com.snbc.bcvm.BCVMSCAN{*;}
+-keep class com.snbc.bcvm.BCVMZK{*;}
+-keep class com.snbc.bcvm.NdkReflect{*;}
+-keep class com.snbc.bcvm.reportjar.base.ReportJarInit{*;}
+-keep class com.snbc.bcvm.reportjar.business.ServerDriverManagerController{*;}
+
+
